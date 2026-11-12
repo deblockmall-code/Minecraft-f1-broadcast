@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MGP Twitch Timing Tower Overlay</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:transparent!important;overflow:hidden}
+body{font-family:Arial,Helvetica,sans-serif;color:#fff}
+#tower{position:absolute;left:2.2%;top:8%;width:min(330px,31vw);background:rgba(9,14,22,.94);border-left:5px solid #e21d37;box-shadow:0 5px 28px #0008}
+.head{padding:13px 15px 10px;background:linear-gradient(110deg,#202b3b,#101722);border-bottom:2px solid #e21d37;display:flex;justify-content:space-between;align-items:center}
+.kicker{font-size:10px;letter-spacing:2px;color:#c5d0de;font-weight:bold}
+h1{font-size:22px;line-height:1;margin:4px 0 0;font-style:italic;font-weight:950;letter-spacing:.6px}
+.lap{text-align:right;font-size:11px;color:#c8d1dd;line-height:1.6}
+.lap strong{display:block;color:#fff;font-size:16px}
+#flag{padding:6px 14px;font-size:10px;font-weight:900;letter-spacing:1.2px;background:#087c4a}
+#rows{padding:4px 0}
+.driver{display:grid;grid-template-columns:33px minmax(0,1fr) auto;align-items:center;gap:8px;padding:7px 12px;min-height:38px;border-bottom:1px solid #ffffff12}
+.driver:nth-child(even){background:#ffffff09}
+.pos{font-size:17px;font-weight:900;font-style:italic;color:#f5f7fb}
+.name{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.team{font-size:9px;color:#aebaca;letter-spacing:.5px;margin-top:2px}
+.gap{font-size:10px;color:#cbd4df;font-weight:700}
+.foot{padding:7px 12px;background:#e21d37;font-size:9px;font-weight:900;letter-spacing:1.6px;display:flex;justify-content:space-between}
+@media(max-width:700px){#tower{width:34vw}.name{font-size:11px}.driver{min-height:32px;padding:5px 8px}.pos{font-size:14px}h1{font-size:17px}}
+</style>
+</head>
+<body>
+<section id="tower" aria-label="Minecraft Grand Prix timing tower">
+ <div class="head">
+  <div><div class="kicker">MINECRAFT GRAND PRIX</div><h1>LIVE TIMING</h1></div>
+  <div class="lap"><strong id="lap">LAP 1/10</strong><span>RACE CONTROL</span></div>
+ </div>
+ <div id="flag">GREEN FLAG</div>
+ <div id="rows"></div>
+ <div class="foot"><span>MGP · TIMING TOWER</span><span>12 DRIVERS</span></div>
+</section>
+<script>
+const sample=Array.from({length:12},(_,i)=>({name:`Driver ${String(i+1).padStart(2,"0")}`,team:"INDEPENDENT"}));
+const rows=document.getElementById("rows");
+function draw(data=sample,lapText="LAP 1/10",flag="GREEN FLAG"){
+ document.getElementById("lap").textContent=lapText;
+ const f=document.getElementById("flag");f.textContent=flag;
+ f.style.background=flag==="RED FLAG"?"#b51e2e":flag.includes("YELLOW")?"#9a7200":flag==="CHEQUERED FLAG"?"#333":"#087c4a";
+ rows.innerHTML=data.slice(0,12).map((d,i)=>`<div class="driver"><div class="pos">${i+1}</div><div><div class="name">${String(d.name||"Driver").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}</div><div class="team">${String(d.team||"").replace(/[&<>"]/g,"")}</div></div><div class="gap">P${i+1}</div></div>`).join("");
+}
+draw();
+</script>
+</body>
+</html>
